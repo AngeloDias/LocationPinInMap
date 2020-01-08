@@ -24,7 +24,6 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 
-
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -105,7 +104,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val lastLocation = LatLng(location!!.latitude, location.longitude)
 
                 mMap.addMarker(MarkerOptions().position(lastLocation).title("Last know location"))
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(lastLocation))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, 12.0f))
             }
     }
 
