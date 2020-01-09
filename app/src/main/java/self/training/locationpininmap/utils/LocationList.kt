@@ -1,6 +1,6 @@
 package self.training.locationpininmap.utils
 
-class LocationList<Location> {
+class LocationList {
     var locationsPins = ArrayList<Location>()
 
     constructor() : super()

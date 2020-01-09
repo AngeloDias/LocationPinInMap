@@ -1,0 +1,194 @@
+[
+  {
+    "nome": "Livraria Cultura",
+    "categoria": 5,
+    "latitude": -8.0654758291991957,
+    "longitude": -34.8736846446991
+  },
+  {
+    "nome": "Petrovel Petroleo Veloso",
+    "categoria": 3,
+    "latitude": -8.0654997302970788,
+    "longitude": -34.872651994228363
+  },
+  {
+    "nome": "Caixa Econômica Paço Alfândega",
+    "categoria": 2,
+    "latitude": -8.0645596193818623,
+    "longitude": -34.873808026313782
+  },
+  {
+    "nome": "Shopping Paço Alfândega",
+    "categoria": 5,
+    "latitude": -8.06489423538188,
+    "longitude": -34.873917996883392
+  },
+  {
+    "nome": "Sushi Digital",
+    "categoria": 1,
+    "latitude": -8.06448791591726,
+    "longitude": -34.873057007789612
+  },
+  {
+    "nome": "Royal",
+    "categoria": 1,
+    "latitude": -8.0641586109535872,
+    "longitude": -34.873024821281433
+  },
+  {
+    "nome": "Sabor Antigo",
+    "categoria": 1,
+    "latitude": -8.0640497278017733,
+    "longitude": -34.873344004154205
+  },
+  {
+    "nome": "Rock & Ribs Lounge",
+    "categoria": 1,
+    "latitude": -8.0640470721147821,
+    "longitude": -34.871517419815063
+  },
+  {
+    "nome": "Love Japan",
+    "categoria": 1,
+    "latitude": -8.06424359290537,
+    "longitude": -34.871579110622406
+  },
+  {
+    "nome": "Seu Boteco",
+    "categoria": 1,
+    "latitude": -8.0637283895486522,
+    "longitude": -34.871359169483185
+  },
+  {
+    "nome": "Banco Itaú",
+    "categoria": 2,
+    "latitude": -8.06348141038718,
+    "longitude": -34.873258173465729
+  },
+  {
+    "nome": "Rede Banorte",
+    "categoria": 2,
+    "latitude": -8.0635212457460135,
+    "longitude": -34.872783422470093
+  },
+  {
+    "nome": "Banco Citibank",
+    "categoria": 2,
+    "latitude": -8.063274266458043,
+    "longitude": -34.872888028621674
+  },
+  {
+    "nome": "Bar Aguiar",
+    "categoria": 1,
+    "latitude": -8.0622040211340416,
+    "longitude": -34.872086048126221
+  },
+  {
+    "nome": "Restaurante Apolo",
+    "categoria": 1,
+    "latitude": -8.0616622581535,
+    "longitude": -34.872592985630035
+  },
+  {
+    "nome": "Arsenal do Camarão",
+    "categoria": 1,
+    "latitude": -8.0615693085496076,
+    "longitude": -34.871375262737274
+  },
+  {
+    "nome": "Banco Bradesco",
+    "categoria": 2,
+    "latitude": -8.0546564538798169,
+    "longitude": -34.872166514396667
+  },
+  {
+    "nome": "Posto Recife Antigo",
+    "categoria": 3,
+    "latitude": -8.0513287871646941,
+    "longitude": -34.871745407581329
+  },
+  {
+    "nome": "Posto Petrobras",
+    "categoria": 3,
+    "latitude": -8.0517430871445566,
+    "longitude": -34.8724964261055
+  },
+  {
+    "nome": "Memorial de Justiça de Pernambuco",
+    "categoria": 4,
+    "latitude": -8.054988422323337,
+    "longitude": -34.870331883430481
+  },
+  {
+    "nome": "Igreja de Nossa Sra. do Pilar",
+    "categoria": 4,
+    "latitude": -8.05613039169027,
+    "longitude": -34.870125353336334
+  },
+  {
+    "nome": "Casa Lotérica Aliança",
+    "categoria": 2,
+    "latitude": -8.0575326194365555,
+    "longitude": -34.871377944946289
+  },
+  {
+    "nome": "Praça Tiradentes",
+    "categoria": 4,
+    "latitude": -8.0587303517894853,
+    "longitude": -34.872104823589325
+  },
+  {
+    "nome": "Praça do Arsenal",
+    "categoria": 4,
+    "latitude": -8.0611151830349321,
+    "longitude": -34.871203601360321
+  },
+  {
+    "nome": "Praça da Comunidade Luso-Brasileira",
+    "categoria": 4,
+    "latitude": -8.0536791372019163,
+    "longitude": -34.87109363079071
+  },
+  {
+    "nome": "Museu Militar Forte do Brum",
+    "categoria": 4,
+    "latitude": -8.0531479858441273,
+    "longitude": -34.8711633682251
+  },
+  {
+    "nome": "Caixa Econômica Federal Marquês de Olinda",
+    "categoria": 2,
+    "latitude": -8.0637748641051878,
+    "longitude": -34.873445928096771
+  },
+  {
+    "nome": "Loteria Caixa Econômica Federal",
+    "categoria": 2,
+    "latitude": -8.0636513745575051,
+    "longitude": -34.87311065196991
+  },
+  {
+    "nome": "Banco Bradesco Av. M. De Olinda",
+    "categoria": 2,
+    "latitude": -8.06334597013783,
+    "longitude": -34.872688204050064
+  },
+  {
+    "nome": "Shopping RioMar Recife",
+    "categoria": 5,
+    "latitude": -8.08584967414886,
+    "longitude": -34.894552230834961
+  },
+  {
+    "nome": "Shopping Recife",
+    "categoria": 5,
+    "latitude": -8.1201153514121849,
+    "longitude": -34.904530048370361
+  },
+  {
+    "nome": "Hiper Bompreço",
+    "categoria": 5,
+    "latitude": -8.1156968787321162,
+    "longitude": -34.902212619781494
+  }
+]

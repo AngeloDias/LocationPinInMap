@@ -23,15 +23,19 @@ import com.google.android.gms.maps.model.MarkerOptions
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.util.Log
+import com.google.gson.Gson
+import self.training.locationpininmap.utils.LocationList
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val _permissionID = 700
     private var prefs: SharedPreferences? = null
     private var _prefsName = "self.training.locationpininmap"
     private var _firstRunKey = "firstRun"
+    private var locationsFromFile: LocationList? = null
+    private val _debugTag = "debugLocations"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +63,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         getLastLocation()
+        getLocationsFromFile()
+    }
+
+    private fun getLocationsFromFile() {
+
+        try {
+
+            val input = assets.open("pontosref.json")
+            val inputAsString = input.bufferedReader().use { it.readText() }
+
+            Log.d(_debugTag, "inputAsString: $inputAsString")
+
+//            this.locationsFromFile = Gson().fromJson(inputAsString, Array<LocationList>::class.java).toList()
+//            this.locationsFromFile!!.locationsPins.forEach {
+//                Log.d(this._debugTag, it.nome)
+//            }
+
+            input.close()
+
+        } catch (e : NoSuchFileException) {
+            e.printStackTrace()
+        }
+
     }
 
     private fun isNetworkAvailable() : Boolean {
