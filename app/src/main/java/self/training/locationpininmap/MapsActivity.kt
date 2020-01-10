@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,21 +20,24 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import android.content.SharedPreferences
+import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
+import com.google.android.gms.maps.model.Marker
 import com.google.gson.Gson
-import self.training.locationpininmap.utils.LocationList
+import self.training.locationpininmap.utils.PinLocation
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val _permissionID = 700
-    private var prefs: SharedPreferences? = null
-    private var _prefsName = "self.training.locationpininmap"
-    private var _firstRunKey = "firstRun"
-    private var locationsFromFile: LocationList? = null
+    private lateinit var prefs: SharedPreferences
+    private val _prefsName = "self.training.locationpininmap"
+    private val _firstRunKey = "firstRun"
+    private lateinit var locationsFromFile: List<PinLocation>
     private val _debugTag = "debugLocations"
+    private lateinit var mapMarkers : MutableMap<String, Marker>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         prefs = getSharedPreferences(_prefsName, Context.MODE_PRIVATE)
+        mapMarkers = HashMap()
     }
 
     /**
@@ -75,10 +78,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             Log.d(_debugTag, "inputAsString: $inputAsString")
 
-//            this.locationsFromFile = Gson().fromJson(inputAsString, Array<LocationList>::class.java).toList()
-//            this.locationsFromFile!!.locationsPins.forEach {
-//                Log.d(this._debugTag, it.nome)
-//            }
+            this.locationsFromFile = Gson().fromJson(inputAsString, Array<PinLocation>::class.java).toList()
+            this.locationsFromFile.forEach {
+                Log.d(this._debugTag, it.nome)
+                pinInMap(LatLng(it.latitude!!, it.longitude!!), it.nome!!, 5.0f)
+            }
 
             input.close()
 
@@ -86,6 +90,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             e.printStackTrace()
         }
 
+    }
+
+    private fun pinInMap(latLng : LatLng, pinTitle : String, zoomLevel : Float) {
+        val marker = mMap.addMarker(MarkerOptions().position(latLng).title(pinTitle))
+
+        mapMarkers[pinTitle] = marker
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
     }
 
     private fun isNetworkAvailable() : Boolean {
@@ -98,8 +109,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
 
-        if(prefs!!.getBoolean(_firstRunKey, true)) {
-            prefs!!.edit().putBoolean(_firstRunKey, false).apply()
+        if(prefs.getBoolean(_firstRunKey, true)) {
+            prefs.edit().putBoolean(_firstRunKey, false).apply()
 
             if(!isNetworkAvailable()) {
                 Toast.makeText(this, "Plase, enable internet", Toast.LENGTH_LONG).show()
@@ -128,10 +139,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 // Got last known location. In some rare situations this can be null.
-                val lastLocation = LatLng(location!!.latitude, location.longitude)
-
-                mMap.addMarker(MarkerOptions().position(lastLocation).title("Last know location"))
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, 12.0f))
+                pinInMap(LatLng(location!!.latitude, location.longitude), "Last know location", 12.0f)
             }
     }
 

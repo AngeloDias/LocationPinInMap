@@ -1,6 +1,6 @@
 package self.training.locationpininmap.utils
 
-class Location {
+class PinLocation {
     var nome : String? = null
     var categoria : Int? = null
     var latitude : Double? = null
