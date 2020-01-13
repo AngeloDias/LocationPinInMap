@@ -23,7 +23,12 @@ import android.content.SharedPreferences
 import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.Build
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.CheckBox
+import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.model.Marker
 import com.google.gson.Gson
 import self.training.locationpininmap.utils.PinLocation
@@ -38,19 +43,55 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationsFromFile: List<PinLocation>
     private val _debugTag = "debugLocations"
     private lateinit var mapMarkers : MutableMap<String, Marker>
+    private lateinit var mapToolbar: Toolbar
+    private val _fragmentPinsDialogTag = "fragment_pin_categories"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         prefs = getSharedPreferences(_prefsName, Context.MODE_PRIVATE)
         mapMarkers = HashMap()
+
+        mapFragment.getMapAsync(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mapToolbar = findViewById(R.id.map_toolbar)
+            mapToolbar.elevation = 4.0f
+            mapToolbar.title = ""
+
+            setSupportActionBar(mapToolbar)
+        }
+
+    }
+
+    fun showPinInSelectedCategories(selectedItems: Array<CharSequence>) {
+
+        for (i in selectedItems.indices) {
+            if (selectedItems[i] != "") {
+                Toast.makeText(this, "Selected item: ${selectedItems[i]}", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?) : Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_filter -> {
+            PinCategoriesDialogFragment().show(supportFragmentManager, _fragmentPinsDialogTag)
+            true
+        } else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 
     /**
@@ -80,7 +121,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             this.locationsFromFile = Gson().fromJson(inputAsString, Array<PinLocation>::class.java).toList()
             this.locationsFromFile.forEach {
-                Log.d(this._debugTag, it.nome)
+                Log.d(this._debugTag, it.nome!!)
                 pinInMap(LatLng(it.latitude!!, it.longitude!!), it.nome!!, 5.0f)
             }
 

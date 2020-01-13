@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">LocationPinInMap</string>
     <string name="title_activity_maps">LocationPinMap</string>
+    <string name="map_filter_pin">Filter</string>
+    <string name="restaurant_category">Restaurantes</string>
+    <string name="bank_category">Bancos</string>
+    <string name="gas_station_category">Posto de combustível</string>
+    <string name="public_places_category">Locais públicos</string>
+    <string name="shopping_category">Compras</string>
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="pin_categories">
+
+        <item>Restaurantes</item>
+        <item>Bancos</item>
+        <item>Posto de combustível</item>
+        <item>Locais públicos</item>
+        <item>Compras</item>
+
+    </array>
+
+</resources>
