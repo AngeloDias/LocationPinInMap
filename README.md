@@ -8,4 +8,3 @@ The application does:
 - It pins the locations in Map
 
 ![Locations showed in Map](locations.gif)
-![](demo_Trim.gif)
