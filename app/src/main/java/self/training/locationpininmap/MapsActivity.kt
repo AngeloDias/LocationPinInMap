@@ -24,10 +24,8 @@ import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CheckBox
 import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.model.Marker
 import com.google.gson.Gson
@@ -42,9 +40,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val _firstRunKey = "firstRun"
     private lateinit var locationsFromFile: List<PinLocation>
     private val _debugTag = "debugLocations"
-    private lateinit var mapMarkers : MutableMap<String, Marker>
+    private lateinit var mapMarkers: MutableMap<String, Marker>
     private lateinit var mapToolbar: Toolbar
     private val _fragmentPinsDialogTag = "fragment_pin_categories"
+    private lateinit var checkedArray: BooleanArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         prefs = getSharedPreferences(_prefsName, Context.MODE_PRIVATE)
         mapMarkers = HashMap()
+        checkedArray = booleanArrayOf(true, true, true, true, true)
 
         mapFragment.getMapAsync(this)
 
@@ -68,17 +68,49 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    fun showPinInSelectedCategories(selectedItems: Array<CharSequence>) {
+    fun showPinInSelectedCategories(selectedItems: BooleanArray) {
+        selectedItems.copyInto(checkedArray)
 
-        for (i in selectedItems.indices) {
-            if (selectedItems[i] != "") {
-                Toast.makeText(this, "Selected item: ${selectedItems[i]}", Toast.LENGTH_LONG).show()
+        for (i in checkedArray.indices) {
+
+            if (!checkedArray[i]) {
+                locationsFromFile.map {
+                    if (it.categoria == i + 1) {
+                        val tempMarker = mapMarkers[it.nome] as Marker
+                        tempMarker.remove()
+                    }
+                }
+
+            } else {
+
+                locationsFromFile.map {
+                    if (it.categoria == i + 1) {
+                        val tempMarker = mapMarkers[it.nome] as Marker
+                        val latLng =
+                            LatLng(tempMarker.position.latitude, tempMarker.position.longitude)
+                        tempMarker.remove()
+
+                        it.nome?.let { itNome ->
+                            val marker =
+                                mMap.addMarker(MarkerOptions().position(latLng).title(itNome))
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                mapMarkers.replace(itNome, marker)
+                            } else {
+                                mapMarkers.remove(itNome)
+                                mapMarkers[itNome] = marker
+                            }
+                        }
+                    }
+                }
+
             }
+
         }
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?) : Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
 
@@ -87,9 +119,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_filter -> {
-            PinCategoriesDialogFragment().show(supportFragmentManager, _fragmentPinsDialogTag)
+            PinCategoriesDialogFragment(checkedArray).show(
+                supportFragmentManager,
+                _fragmentPinsDialogTag
+            )
             true
-        } else -> {
+        }
+        else -> {
             super.onOptionsItemSelected(item)
         }
     }
@@ -113,36 +149,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getLocationsFromFile() {
 
         try {
-
             val input = assets.open("pontosref.json")
             val inputAsString = input.bufferedReader().use { it.readText() }
 
-            Log.d(_debugTag, "inputAsString: $inputAsString")
-
-            this.locationsFromFile = Gson().fromJson(inputAsString, Array<PinLocation>::class.java).toList()
+            this.locationsFromFile =
+                Gson().fromJson(inputAsString, Array<PinLocation>::class.java).toList()
             this.locationsFromFile.forEach {
-                Log.d(this._debugTag, it.nome!!)
-                pinInMap(LatLng(it.latitude!!, it.longitude!!), it.nome!!, 5.0f)
+                pinInMap(LatLng(it.latitude!!, it.longitude!!), it.nome!!, 12.0f)
             }
 
             input.close()
 
-        } catch (e : NoSuchFileException) {
+        } catch (e: NoSuchFileException) {
             e.printStackTrace()
         }
 
     }
 
-    private fun pinInMap(latLng : LatLng, pinTitle : String, zoomLevel : Float) {
+    private fun pinInMap(latLng: LatLng, pinTitle: String, zoomLevel: Float) {
         val marker = mMap.addMarker(MarkerOptions().position(latLng).title(pinTitle))
-
         mapMarkers[pinTitle] = marker
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
     }
 
-    private fun isNetworkAvailable() : Boolean {
-        val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo : NetworkInfo? = connectivityManager.activeNetworkInfo
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
@@ -150,25 +184,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
 
-        if(prefs.getBoolean(_firstRunKey, true)) {
+        if (prefs.getBoolean(_firstRunKey, true)) {
             prefs.edit().putBoolean(_firstRunKey, false).apply()
 
-            if(!isNetworkAvailable()) {
+            if (!isNetworkAvailable()) {
                 Toast.makeText(this, "Plase, enable internet", Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             return true
         }
 
         return false
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == _permissionID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 acquireFusedLocation()
@@ -180,12 +225,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 // Got last known location. In some rare situations this can be null.
-                pinInMap(LatLng(location!!.latitude, location.longitude), "Last know location", 12.0f)
+                if (location != null) {
+                    pinInMap(
+                        LatLng(location.latitude, location.longitude),
+                        "Last know location",
+                        11.0f
+                    )
+                }
             }
     }
 
     private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
@@ -194,7 +246,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             _permissionID
         )
     }
