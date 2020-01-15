@@ -3,47 +3,48 @@ package self.training.locationpininmap
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import android.content.SharedPreferences
-import android.location.Location
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.os.Build
-import android.view.Menu
-import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import self.training.locationpininmap.utils.PinLocation
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val _permissionID = 700
     private lateinit var prefs: SharedPreferences
-    private val _prefsName = "self.training.locationpininmap"
-    private val _firstRunKey = "firstRun"
     private lateinit var locationsFromFile: List<PinLocation>
-    private val _debugTag = "debugLocations"
     private lateinit var mapMarkers: MutableMap<String, Marker>
     private lateinit var mapToolbar: Toolbar
-    private val _fragmentPinsDialogTag = "fragment_pin_categories"
     private lateinit var checkedArray: BooleanArray
+
+    private val _debugTag = "debugLocations"
+    private val _permissionID = 700
+    private val _prefsName = "self.training.locationpininmap"
+    private val _firstRunKey = "firstRun"
+    private val _fragmentPinsDialogTag = "fragment_pin_categories"
+    private val _saveCheckArrayInstance = "checkArrayInstanceTag"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +114,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
-
         return true
     }
 
