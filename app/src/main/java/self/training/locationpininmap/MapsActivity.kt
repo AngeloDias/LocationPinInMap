@@ -43,8 +43,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val _permissionID = 700
     private val _prefsName = "self.training.locationpininmap"
     private val _firstRunKey = "firstRun"
-    private val _fragmentPinsDialogTag = "fragment_pin_categories"
     private val _saveCheckArrayInstance = "checkArrayInstanceTag"
+
+    companion object {
+        const val fragmentPinsDialogTag = "fragment_pin_categories"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             LatLng(tempMarker.position.latitude, tempMarker.position.longitude)
                         tempMarker.remove()
 
-                        it.nome?.let { itNome ->
+                        it.nome.let { itNome ->
                             val marker =
                                 mMap.addMarker(MarkerOptions().position(latLng).title(itNome))
 
@@ -121,7 +124,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         R.id.action_filter -> {
             PinCategoriesDialogFragment(checkedArray).show(
                 supportFragmentManager,
-                _fragmentPinsDialogTag
+                fragmentPinsDialogTag
             )
             true
         }
@@ -155,7 +158,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             this.locationsFromFile =
                 Gson().fromJson(inputAsString, Array<PinLocation>::class.java).toList()
             this.locationsFromFile.forEach {
-                pinInMap(LatLng(it.latitude!!, it.longitude!!), it.nome!!, 12.0f)
+                pinInMap(LatLng(it.latitude, it.longitude), it.nome, 12.0f)
             }
 
             input.close()
