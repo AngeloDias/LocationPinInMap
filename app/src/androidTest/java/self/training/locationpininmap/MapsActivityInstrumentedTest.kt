@@ -1,39 +1,33 @@
 package self.training.locationpininmap
 
-import androidx.fragment.app.FragmentManager
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import org.hamcrest.Matchers
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import self.training.locationpininmap.MapsActivity.Companion.fragmentPinsDialogTag
-
 
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 class MapsActivityInstrumentedTest {
-    private lateinit var supportFrag: FragmentManager
 
-    @get: Rule
-    val intentsTestRule = IntentsTestRule(MapsActivity::class.java)
-
-    @get: Rule
-    val activityTestRule = ActivityTestRule<MapsActivity>(MapsActivity::class.java)
-
-    @Before
-    fun setUPFragment() {
-        supportFrag = activityTestRule.activity.supportFragmentManager
-
-        supportFrag.beginTransaction()
-    }
+    @Rule
+    @JvmField
+    var activityRule = ActivityTestRule<MapsActivity>(MapsActivity::class.java)
 
     @Test
-    fun testing(){
-        Espresso.onView(ViewMatchers.withTagValue(Matchers.`is`(fragmentPinsDialogTag)))
+    fun clickOnActionBar() {
+        var viewId = 0
+
+        onView(withId(R.id.action_filter)).check { view, _ ->
+            viewId = view.id
+        }.perform(click())
+
+        onView(withId(viewId)).perform(pressBack())
     }
 
 }
