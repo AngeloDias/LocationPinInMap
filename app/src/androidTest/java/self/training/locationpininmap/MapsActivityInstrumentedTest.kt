@@ -21,13 +21,7 @@ class MapsActivityInstrumentedTest {
 
     @Test
     fun clickOnActionBar() {
-        var viewId = 0
-
-        onView(withId(R.id.action_filter)).check { view, _ ->
-            viewId = view.id
-        }.perform(click())
-
-        onView(withId(viewId)).perform(pressBack())
+        onView(withId(R.id.action_filter)).perform(click())
     }
 
 }
